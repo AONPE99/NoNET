@@ -1,6 +1,7 @@
 ⚠️ Este proyecto es solo con fines académicos.
 No realiza actividad real maliciosa ni se conecta a Internet.
-Se ejecuta únicamente en entorno controlado y simulado.
+Se ejecuta únicamente en entorno controlado , simulado , 
+ESTE PROYECTO ESTA EN DESARROOLLO
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 
